@@ -3,53 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Agente de Viaje: tu asistente de viajes interactivo">
     <title>Agente de Viaje</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <main class="contenedor">
+    <main class="contenedor-chat">
+
+        <!-- Encabezado -->
         <header class="encabezado">
-            <div class="logo">✈</div>
-            <div class="titulo">
+            <div class="avatar-agente">✈</div>
+
+            <div class="datos-agente">
                 <h1>Agente de Viaje</h1>
-                <p>Tu próxima aventura comienza acá</p>
+                <p><span class="punto-online"></span> Asistente disponible</p>
             </div>
-            <div class="estado">
-                <span class="punto"></span>
-                En línea
+
+            <div class="decoracion">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </header>
 
-        <!-- Zona de chat -->
-        <section class="zona de chat" id="zona-chat"
-                 aria-label="Zona de chat" aria-live="polite">
+        <!-- zona de chat -->
+        <section id="zona de chat"
+                 aria-label="zona de chat"
+                 aria-live="polite">
 
-            <div class="bienvenida">
-                <span class="icono-bienvenida">🌎</span>
-                <p>¡Bienvenido a bordo!</p>
+            <div id="mensajes" class="mensajes">
+
+                <div class="mensaje agente">
+                    <div class="avatar-mensaje">✈</div>
+                    <div class="burbuja">
+                        ¡Hola! 👋 Soy tu Agente de Viaje.
+                        Estoy acá para ayudarte a descubrir destinos,
+                        comparar precios y organizar tu próxima aventura.
+                        ¿A dónde te gustaría viajar?
+                    </div>
+                </div>
+
             </div>
-
-            <div id="mensajes" class="mensajes"></div>
 
         </section>
 
-        <!-- Zona de escritura -->
-        <section class="zona de escritura"
-                 aria-label="Zona de escritura">
+        <!-- zona de escritura -->
+        <section id="zona de escritura"
+                 aria-label="zona de escritura">
 
-            <div id="entrada-datos" class="entrada-datos"></div>
+            <form id="formulario-chat">
 
-            <div class="pie">
-                <span>✈</span>
-                <p>Agente de Viaje · Viajá a tu manera</p>
+                <input
+                    type="text"
+                    id="mensaje"
+                    name="mensaje"
+                    placeholder="Escribí tu mensaje..."
+                    maxlength="500"
+                    autocomplete="off"
+                    aria-label="Escribí tu mensaje"
+                    required
+                >
+
+                <button type="submit" id="boton-enviar"
+                        aria-label="Enviar mensaje">
+                    <svg viewBox="0 0 24 24"
+                         width="24"
+                         height="24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2"
+                         stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M22 2 11 13"></path>
+                        <path d="m22 2-7 20-4-9-9-4Z"></path>
+                    </svg>
+                </button>
+
+            </form>
+
+            <div class="pie-chat">
+                <span>✦</span>
+                Tu próxima aventura comienza acá
             </div>
 
         </section>
 
     </main>
 
+    <!-- Configuración antes del motor -->
+    <script src="config.js"></script>
     <script src="script.js"></script>
+
 </body>
 </html>
