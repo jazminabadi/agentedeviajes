@@ -1,0 +1,323 @@
+/* Configuración general */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #e9f5ff, #f5f7ff);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #24344d;
+}
+
+/* Contenedor principal */
+
+.contenedor {
+    width: 100%;
+    max-width: 850px;
+    height: 88vh;
+    min-height: 550px;
+    background: white;
+    border-radius: 22px;
+    box-shadow: 0 12px 45px rgba(32, 70, 110, 0.13);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Encabezado */
+
+.encabezado {
+    background: #1769aa;
+    color: white;
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: white;
+    color: #1769aa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+}
+
+.titulo {
+    flex: 1;
+}
+
+.titulo h1 {
+    font-size: 21px;
+}
+
+.titulo p {
+    font-size: 12px;
+    opacity: 0.85;
+    margin-top: 4px;
+}
+
+.estado {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.punto {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #65e6a0;
+}
+
+/* Zona de chat */
+
+.zona.de.chat {
+    flex: 1;
+    padding: 25px;
+    overflow-y: auto;
+    background: #f8fbff;
+}
+
+.bienvenida {
+    text-align: center;
+    margin-bottom: 22px;
+    color: #718198;
+    font-size: 13px;
+}
+
+.icono-bienvenida {
+    display: block;
+    font-size: 30px;
+    margin-bottom: 6px;
+}
+
+.mensajes {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+}
+
+/* Mensajes del bot y del usuario */
+
+.mensaje {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    max-width: 85%;
+    animation: aparecer 0.25s ease;
+}
+
+.mensaje.usuario {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.avatar {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    background: #dceeff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 17px;
+}
+
+.usuario .avatar {
+    background: #d8e6ff;
+}
+
+.burbuja {
+    padding: 14px 17px;
+    border-radius: 5px 18px 18px 18px;
+    background: white;
+    border: 1px solid #e3eaf2;
+    line-height: 1.55;
+    font-size: 14px;
+    box-shadow: 0 3px 9px rgba(0,0,0,0.03);
+}
+
+.usuario .burbuja {
+    background: #1769aa;
+    color: white;
+    border-radius: 18px 5px 18px 18px;
+    border: none;
+}
+
+/* Opciones interactivas */
+
+.opciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-left: 44px;
+    max-width: 90%;
+}
+
+.opcion {
+    background: white;
+    color: #1769aa;
+    border: 1px solid #a9cce9;
+    padding: 11px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.opcion:hover {
+    background: #1769aa;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.opcion:focus-visible,
+.boton-enviar:focus-visible,
+.campo-nombre:focus-visible {
+    outline: 3px solid #ffbd59;
+    outline-offset: 3px;
+}
+
+/* Zona de escritura */
+
+.zona.de.escritura {
+    padding: 18px 25px 12px;
+    border-top: 1px solid #e7edf4;
+    background: white;
+}
+
+.entrada-datos {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.campo-nombre {
+    width: 100%;
+    border: 1px solid #cbd8e6;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 14px;
+    outline: none;
+}
+
+.campo-nombre:focus {
+    border-color: #1769aa;
+}
+
+.boton-enviar {
+    background: #1769aa;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.boton-enviar:hover {
+    background: #105184;
+}
+
+.error {
+    color: #c0392b;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.pie {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 14px;
+    color: #91a0b2;
+    font-size: 11px;
+}
+
+/* Animación */
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive: celulares */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 0;
+    }
+
+    .contenedor {
+        height: 100vh;
+        min-height: 450px;
+        border-radius: 0;
+    }
+
+    .encabezado {
+        padding: 17px;
+    }
+
+    .titulo h1 {
+        font-size: 17px;
+    }
+
+    .estado {
+        font-size: 10px;
+    }
+
+    .zona.de.chat {
+        padding: 16px;
+    }
+
+    .mensaje {
+        max-width: 95%;
+    }
+
+    .burbuja {
+        font-size: 13px;
+    }
+
+    .opciones {
+        margin-left: 0;
+        max-width: 100%;
+    }
+
+    .opcion {
+        font-size: 12px;
+        padding: 10px 12px;
+    }
+
+    .zona.de.escritura {
+        padding: 15px;
+    }
+
+    .pie {
+        font-size: 10px;
+    }
+}
