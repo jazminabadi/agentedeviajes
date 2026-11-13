@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Agente de Viaje: tu asistente de viajes interactivo">
+    <title>Agente de Viaje</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="contenedor">
+        <header class="encabezado">
+            <div class="logo">✈</div>
+            <div class="titulo">
+                <h1>Agente de Viaje</h1>
+                <p>Tu próxima aventura comienza acá</p>
+            </div>
+            <div class="estado">
+                <span class="punto"></span>
+                En línea
+            </div>
+        </header>
+
+        <!-- Zona de chat -->
+        <section class="zona de chat" id="zona-chat"
+                 aria-label="Zona de chat" aria-live="polite">
+
+            <div class="bienvenida">
+                <span class="icono-bienvenida">🌎</span>
+                <p>¡Bienvenido a bordo!</p>
+            </div>
+
+            <div id="mensajes" class="mensajes"></div>
+
+        </section>
+
+        <!-- Zona de escritura -->
+        <section class="zona de escritura"
+                 aria-label="Zona de escritura">
+
+            <div id="entrada-datos" class="entrada-datos"></div>
+
+            <div class="pie">
+                <span>✈</span>
+                <p>Agente de Viaje · Viajá a tu manera</p>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
