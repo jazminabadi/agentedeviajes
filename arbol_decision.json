@@ -1,0 +1,355 @@
+{
+  "nodos": [
+    {
+      "id": "inicio",
+      "texto": "¡Hola! 👋 Soy tu Agente de Viaje. Estoy acá para ayudarte a organizar una aventura increíble. Antes de comenzar, ¿cómo te llamás?",
+      "campo": "nombre",
+      "placeholder": "Escribí tu nombre...",
+      "error": "Ingresá un nombre válido, sin números ni símbolos.",
+      "opciones": [
+        {
+          "texto": "Continuar ✈️",
+          "siguiente": "menu_principal"
+        }
+      ]
+    },
+    {
+      "id": "menu_principal",
+      "texto": "¡Genial, {nombre}! Bienvenido a bordo. 🌎 ¿Qué te gustaría descubrir hoy?",
+      "opciones": [
+        {
+          "texto": "🌍 Ver destinos",
+          "siguiente": "destinos"
+        },
+        {
+          "texto": "💰 Consultar precios",
+          "siguiente": "precios"
+        },
+        {
+          "texto": "🎫 Información sobre pasajes",
+          "siguiente": "pasajes"
+        },
+        {
+          "texto": "🔴 Terminar conversación",
+          "siguiente": "finalizar"
+        }
+      ]
+    },
+    {
+      "id": "destinos",
+      "texto": "¡Hora de viajar! 🌴 Elegí qué tipo de aventura estás buscando.",
+      "opciones": [
+        {
+          "texto": "🇦🇷 Destinos nacionales",
+          "siguiente": "nacionales"
+        },
+        {
+          "texto": "🌎 Destinos internacionales",
+          "siguiente": "internacionales"
+        },
+        {
+          "texto": "⬅ Volver al menú",
+          "siguiente": "menu_principal"
+        }
+      ]
+    },
+    {
+      "id": "nacionales",
+      "texto": "¡Argentina tiene lugares increíbles! ¿Cuál de estos destinos te gustaría conocer?",
+      "opciones": [
+        {
+          "texto": "🏔 Bariloche",
+          "siguiente": "bariloche"
+        },
+        {
+          "texto": "🌊 Mar del Plata",
+          "siguiente": "mar_del_plata"
+        },
+        {
+          "texto": "🏜 Mendoza",
+          "siguiente": "mendoza"
+        },
+        {
+          "texto": "⬅ Volver a destinos",
+          "siguiente": "destinos"
+        }
+      ]
+    },
+    {
+      "id": "internacionales",
+      "texto": "¡Prepará el pasaporte! 🌍 Estos destinos internacionales te esperan.",
+      "opciones": [
+        {
+          "texto": "🇧🇷 Río de Janeiro",
+          "siguiente": "rio"
+        },
+        {
+          "texto": "🇪🇸 Madrid",
+          "siguiente": "madrid"
+        },
+        {
+          "texto": "🇫🇷 París",
+          "siguiente": "paris"
+        },
+        {
+          "texto": "⬅ Volver a destinos",
+          "siguiente": "destinos"
+        }
+      ]
+    },
+    {
+      "id": "bariloche",
+      "texto": "🏔 ¡Bariloche te espera! Podés disfrutar de lagos, montañas, chocolate y paisajes espectaculares. Es ideal para una escapada llena de naturaleza.",
+      "opciones": [
+        {
+          "texto": "💰 Consultar precios",
+          "siguiente": "precios_nacionales"
+        },
+        {
+          "texto": "🎫 Consultar pasajes",
+          "siguiente": "pasajes"
+        },
+        {
+          "texto": "⬅ Volver a destinos nacionales",
+          "siguiente": "nacionales"
+        },
+        {
+          "texto": "🏠 Menú principal",
+          "siguiente": "menu_principal"
+        }
+      ]
+    },
+    {
+      "id": "mar_del_plata",
+      "texto": "🌊 ¡Mar del Plata! Playa, gastronomía, paseos y diversión. Un clásico para disfrutar del verano argentino.",
+      "opciones": [
+        {
+          "texto": "💰 Consultar precios",
+          "siguiente": "precios_nacionales"
+        },
+        {
+          "texto": "🎫 Consultar pasajes",
+          "siguiente": "pasajes"
+        },
+        {
+          "texto": "⬅ Volver a destinos nacionales",
+          "siguiente": "nacionales"
+        },
+        {
+          "texto": "🏠 Menú principal",
+          "siguiente": "menu_principal"
+        }
+      ]
+    },
+    {
+      "id": "mendoza",
+      "texto": "🏜 ¡Mendoza! Montañas, bodegas, paisajes y aventuras. Un destino perfecto para descubrir nuevos rincones.",
+      "opciones": [
+        {
+          "texto": "💰 Consultar precios",
+          "siguiente": "precios_nacionales"
+        },
+        {
+          "texto": "🎫 Consultar pasajes",
+          "siguiente": "pasajes"
+        },
+        {
+          "texto": "⬅ Volver a destinos nacionales",
+          "siguiente": "nacionales"
+        },
+        {
+          "texto": "🏠 Menú principal",
+          "siguiente": "menu_principal"
+        }
+      ]
+    },
+    {
+      "id": "rio",
+      "texto": "🇧🇷 ¡Río de Janeiro! Playas increíbles, música, cultura y paisajes inolvidables. ¡Una aventura brasileña!",
+      "opciones": [
+        {
+          "texto": "💰 Consultar precios",
+          "siguiente": "precios_internacionales"
+        },
+        {
+          "texto": "🎫 Consultar pasajes",
+          "siguiente": "pasajes"
+        },
+        {
+          "texto": "⬅ Volver a destinos internacionales",
+          "siguiente": "internacionales"
+        },
+        {
+          "texto": "🏠 Menú principal",
+          "siguiente": "menu_principal"
+        }
+      ]
+    },
+    {
+      "id": "madrid",
+      "texto": "🇪🇸 ¡Madrid! Historia, museos, gastronomía y una vida nocturna espectacular. ¡España te espera!",
+      "opciones": [
+        {
+          "texto": "💰 Consultar precios",
+          "siguiente": "precios_internacionales"
+        },
+        {
+          "texto": "🎫 Consultar pasajes",
+          "siguiente": "pasajes"
+        },
+        {
+          "texto": "⬅ Volver a destinos internacionales",
+          "siguiente": "internacionales"
+        },
+        {
+          "texto": "🏠 Menú principal",
+          "siguiente": "menu_principal"
+        }
+      ]
+    },
+    {
+      "id": "paris",
+      "texto": "🇫🇷 ¡París! La ciudad de la Torre Eiffel, el arte y la arquitectura. ¡Un destino lleno de magia!",
+      "opciones": [
+        {
+          "texto": "💰 Consultar precios",
+          "siguiente": "precios_internacionales"
+        },
+        {
+          "texto": "🎫 Consultar pasajes",
+          "siguiente": "pasajes"
+        },
+        {
+          "texto": "⬅ Volver a destinos internacionales",
+          "siguiente": "internacionales"
+        },
+        {
+          "texto": "🏠 Menú principal",
+          "siguiente": "menu_principal"
+        }
+      ]
+    },
+    {
+      "id": "precios",
+      "texto": "💰 ¡Hablemos de presupuestos! Elegí qué tipo de viaje querés consultar.",
+      "opciones": [
+        {
+          "texto": "🇦🇷 Precios nacionales",
+          "siguiente": "precios_nacionales"
+        },
+        {
+          "texto": "🌎 Precios internacionales",
+          "siguiente": "precios_internacionales"
+        },
+        {
+          "texto": "⬅ Volver al menú",
+          "siguiente": "menu_principal"
+        }
+      ]
+    },
+    {
+      "id": "precios_nacionales",
+      "texto": "💰 Los viajes nacionales tienen diferentes costos según la temporada y el destino. Como referencia orientativa, podés considerar un presupuesto de entre $80.000 y $250.000 ARS para un pasaje de ida. Los valores son ilustrativos y no representan tarifas vigentes.",
+      "opciones": [
+        {
+          "texto": "🎫 Información sobre pasajes",
+          "siguiente": "pasajes"
+        },
+        {
+          "texto": "🌍 Ver destinos",
+          "siguiente": "destinos"
+        },
+        {
+          "texto": "⬅ Volver al menú",
+          "siguiente": "menu_principal"
+        }
+      ]
+    },
+    {
+      "id": "precios_internacionales",
+      "texto": "💰 Los viajes internacionales dependen del país, la temporada y la anticipación de compra. Como referencia ilustrativa, un pasaje de ida puede costar entre USD 300 y USD 1.200. Estos importes no son cotizaciones actuales.",
+      "opciones": [
+        {
+          "texto": "🎫 Información sobre pasajes",
+          "siguiente": "pasajes"
+        },
+        {
+          "texto": "🌍 Ver destinos",
+          "siguiente": "destinos"
+        },
+        {
+          "texto": "⬅ Volver al menú",
+          "siguiente": "menu_principal"
+        }
+      ]
+    },
+    {
+      "id": "pasajes",
+      "texto": "🎫 ¡Vamos con los pasajes! Te cuento: existen opciones de ida, ida y vuelta, y diferentes clases de servicio. Para elegir el mejor viaje, es importante comparar fechas, equipaje incluido y horarios.",
+      "opciones": [
+        {
+          "texto": "✈ Pasajes nacionales",
+          "siguiente": "pasajes_nacionales"
+        },
+        {
+          "texto": "🌎 Pasajes internacionales",
+          "siguiente": "pasajes_internacionales"
+        },
+        {
+          "texto": "💰 Consultar precios",
+          "siguiente": "precios"
+        },
+        {
+          "texto": "⬅ Volver al menú",
+          "siguiente": "menu_principal"
+        }
+      ]
+    },
+    {
+      "id": "pasajes_nacionales",
+      "texto": "✈ Los pasajes nacionales permiten recorrer Argentina en avión. Podés comparar aerolíneas, equipaje, horarios y condiciones de cambio antes de elegir.",
+      "opciones": [
+        {
+          "texto": "💰 Consultar precios nacionales",
+          "siguiente": "precios_nacionales"
+        },
+        {
+          "texto": "🌍 Ver destinos",
+          "siguiente": "nacionales"
+        },
+        {
+          "texto": "⬅ Volver al menú",
+          "siguiente": "menu_principal"
+        }
+      ]
+    },
+    {
+      "id": "pasajes_internacionales",
+      "texto": "🌎 Para viajar al exterior, revisá los requisitos de documentación, las escalas, el equipaje y las condiciones de ingreso al país de destino. ¡Que no falte nada en tu valija!",
+      "opciones": [
+        {
+          "texto": "💰 Consultar precios internacionales",
+          "siguiente": "precios_internacionales"
+        },
+        {
+          "texto": "🌍 Ver destinos",
+          "siguiente": "internacionales"
+        },
+        {
+          "texto": "⬅ Volver al menú",
+          "siguiente": "menu_principal"
+        }
+      ]
+    },
+    {
+      "id": "finalizar",
+      "texto": "¡Fue un placer ayudarte, {nombre}! ✈️ Gracias por viajar con nosotros. ¡Que tengas una aventura increíble! Cuando quieras volver, acá estaremos.",
+      "opciones": [
+        {
+          "texto": "🔄 Volver a empezar",
+          "siguiente": "inicio"
+        }
+      ]
+    }
+  ]
+}
