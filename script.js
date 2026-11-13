@@ -1,240 +1,448 @@
-// Motor del chatbot Agente de Viaje
+// ======================================
+// AGENTE DE VIAJE
+// Motor de conversación y conexión Make
+// ======================================
 
+// Elementos de la interfaz
+
+const formulario = document.getElementById("formulario-chat");
+const campoMensaje = document.getElementById("mensaje");
+const botonEnviar = document.getElementById("boton-enviar");
 const mensajes = document.getElementById("mensajes");
-const entrada = document.getElementById("entrada-datos");
-const zonaChat = document.getElementById("zona-chat");
+const zonaChat = document.getElementById("zona de chat");
 
-let arbol = {};
-let nombreUsuario = "";
-let nodoActual = null;
-let finalizado = false;
+// Variables de sesión
 
-// Cargar el árbol de decisiones desde el archivo JSON
+let sessionId = null;
+let sessionIdMemoria = null;
+let ultimoEnvio = 0;
 
-async function cargarArbol() {
+// Estados de la aplicación
+
+let cargando = false;
+
+// ======================================
+// GENERAR IDENTIFICADOR DE SESIÓN
+// ======================================
+
+function generarSessionId() {
+
+    if (typeof crypto !== "undefined" &&
+        typeof crypto.randomUUID === "function") {
+
+        return crypto.randomUUID();
+
+    }
+
+    return Date.now().toString(36) +
+        Math.random().toString(36).substring(2);
+}
+
+// ======================================
+// RECUPERAR O CREAR SESIÓN
+// ======================================
+
+function inicializarSesion() {
+
     try {
-        const respuesta = await fetch("arbol_decision.json");
 
-        if (!respuesta.ok) {
-            throw new Error("No se pudo cargar el archivo");
+        const guardado = localStorage.getItem("agente_viaje_session");
+
+        if (guardado) {
+
+            sessionId = guardado;
+
+        } else {
+
+            sessionId = generarSessionId();
+
+            localStorage.setItem(
+                "agente_viaje_session",
+                sessionId
+            );
+
         }
-
-        arbol = await respuesta.json();
-
-        // Comprobar que los nodos y sus conexiones sean válidos
-        validarArbol();
-
-        mostrarNodo("inicio");
 
     } catch (error) {
-        mensajes.innerHTML = "";
 
-        const aviso = document.createElement("p");
-        aviso.className = "error";
-        aviso.textContent =
-            "Abrí el proyecto con Live Server o un servidor local para que pueda leer arbol_decision.json";
+        // Si el almacenamiento no está disponible,
+        // mantener la sesión en memoria.
 
-        mensajes.appendChild(aviso);
-    }
-}
+        if (!sessionIdMemoria) {
 
-// Comprobar que todos los destinos existan
+            sessionIdMemoria = generarSessionId();
 
-function validarArbol() {
-    if (!arbol.nodos || !arbol.nodos.length) {
-        throw new Error("Árbol vacío");
-    }
-
-    const ids = new Set(arbol.nodos.map(nodo => nodo.id));
-
-    arbol.nodos.forEach(nodo => {
-        if (!nodo.id || typeof nodo.texto !== "string" ||
-            !Array.isArray(nodo.opciones)) {
-            throw new Error("Nodo inválido");
         }
 
-        nodo.opciones.forEach(opcion => {
-            if (!opcion.texto || !ids.has(opcion.siguiente)) {
-                throw new Error("Conexión inválida");
-            }
-        });
-    });
+        sessionId = sessionIdMemoria;
+
+    }
+
 }
 
-// Buscar un nodo por su identificador
+// Crear la sesión una sola vez al iniciar
 
-function buscarNodo(id) {
-    return arbol.nodos.find(nodo => nodo.id === id);
-}
+inicializarSesion();
 
-// Agregar un mensaje al chat
+// ======================================
+// AGREGAR MENSAJES AL CHAT
+// ======================================
 
-function agregarMensaje(texto, tipo) {
-    const mensaje = document.createElement("div");
-    mensaje.className = `mensaje ${tipo}`;
+function agregarMensaje(texto, tipo, estado = "") {
+
+    const contenedor = document.createElement("div");
+
+    contenedor.className = `mensaje ${tipo}`;
+
+    if (estado) {
+        contenedor.classList.add(estado);
+    }
 
     const avatar = document.createElement("div");
-    avatar.className = "avatar";
-    avatar.textContent = tipo === "bot" ? "✈️" : "👤";
+
+    avatar.className = "avatar-mensaje";
+
+    avatar.textContent = tipo === "agente" ? "✈" : "👤";
 
     const burbuja = document.createElement("div");
+
     burbuja.className = "burbuja";
 
-    // Insertar texto de forma segura
+    // Mostrar el contenido de forma segura
+
     burbuja.textContent = texto;
 
-    mensaje.appendChild(avatar);
-    mensaje.appendChild(burbuja);
+    contenedor.appendChild(avatar);
+    contenedor.appendChild(burbuja);
 
-    mensajes.appendChild(mensaje);
+    mensajes.appendChild(contenedor);
+
+    // Bajar automáticamente al último mensaje
 
     zonaChat.scrollTop = zonaChat.scrollHeight;
+
+    return contenedor;
+
 }
 
-// Mostrar un nodo del árbol
+// ======================================
+// CONTROLAR ESTADOS DE LA INTERFAZ
+// ======================================
 
-function mostrarNodo(id) {
-    if (finalizado) return;
+function cambiarEstado(estado) {
 
-    const nodo = buscarNodo(id);
+    if (estado === "cargando") {
 
-    if (!nodo) return;
+        campoMensaje.disabled = true;
+        botonEnviar.disabled = true;
 
-    nodoActual = nodo;
+        botonEnviar.setAttribute("aria-label", "Enviando mensaje");
 
-    entrada.innerHTML = "";
+    } else {
 
-    // Reemplazar el nombre cuando corresponda
-    const texto = nodo.texto.replace(
-        /\{nombre\}/g,
-        nombreUsuario
+        campoMensaje.disabled = false;
+        botonEnviar.disabled = false;
+
+        botonEnviar.setAttribute("aria-label", "Enviar mensaje");
+
+    }
+
+}
+
+// ======================================
+// ESPERAR EL TIEMPO MÍNIMO ENTRE ENVÍOS
+// ======================================
+
+function esperar(ms) {
+
+    return new Promise(resolve => setTimeout(resolve, ms));
+
+}
+
+// ======================================
+// EXTRAER RESPUESTA DE MAKE
+// ======================================
+
+function obtenerRespuesta(texto) {
+
+    if (!texto.trim()) {
+
+        return "(respuesta vacía)";
+
+    }
+
+    try {
+
+        const datos = JSON.parse(texto);
+
+        // Si Make devuelve un objeto JSON,
+        // buscar el primer campo válido.
+
+        if (datos !== null &&
+            typeof datos === "object" &&
+            !Array.isArray(datos)) {
+
+            const propiedades = [
+                "response",
+                "respuesta",
+                "message",
+                "mensaje"
+            ];
+
+            for (const propiedad of propiedades) {
+
+                const valor = datos[propiedad];
+
+                if (
+                    typeof valor === "string" &&
+                    valor.trim() !== ""
+                ) {
+
+                    return valor;
+
+                }
+
+            }
+
+            return "Make respondió, pero sin el campo response";
+
+        }
+
+        // Si es JSON válido pero no es un objeto,
+        // mostrar el texto original.
+
+        return texto;
+
+    } catch (error) {
+
+        // Si no es JSON, mostrar el texto original.
+
+        return texto;
+
+    }
+
+}
+
+// ======================================
+// ENVIAR MENSAJE AL WEBHOOK
+// ======================================
+
+async function enviarMensaje(evento) {
+
+    evento.preventDefault();
+
+    // Evitar envíos repetidos
+
+    if (cargando) return;
+
+    // Validar configuración del webhook
+
+    if (
+        typeof WEBHOOK_URL === "undefined" ||
+        !WEBHOOK_URL.trim() ||
+        WEBHOOK_URL.includes("ACA VA")
+    ) {
+
+        agregarMensaje(
+            "Falta pegar la URL de tu webhook en config.js",
+            "agente"
+        );
+
+        return;
+
+    }
+
+    // Leer y validar el mensaje
+
+    const mensaje = campoMensaje.value.trim();
+
+    if (!mensaje) return;
+
+    if (mensaje.length > 500) {
+
+        agregarMensaje(
+            "El mensaje no puede superar los 500 caracteres.",
+            "agente"
+        );
+
+        return;
+
+    }
+
+    // Bloquear controles mientras se procesa
+
+    cargando = true;
+
+    cambiarEstado("cargando");
+
+    // Mostrar mensaje del usuario
+
+    agregarMensaje(mensaje, "usuario");
+
+    // Limpiar campo
+
+    campoMensaje.value = "";
+
+    // Crear indicador de carga
+
+    const indicador = agregarMensaje(
+        "Estoy preparando tu respuesta...",
+        "agente",
+        "cargando"
     );
 
-    agregarMensaje(texto, "bot");
+    let controller = null;
+    let temporizador = null;
 
-    // Crear opciones dinámicamente
-    if (nodo.opciones.length > 0) {
+    try {
 
-        const contenedorOpciones = document.createElement("div");
-        contenedorOpciones.className = "opciones";
+        // Pausa mínima de 1,5 segundos entre envíos
 
-        nodo.opciones.forEach(opcion => {
+        const tiempoTranscurrido = Date.now() - ultimoEnvio;
 
-            const boton = document.createElement("button");
+        const tiempoEspera = Math.max(
+            0,
+            1500 - tiempoTranscurrido
+        );
 
-            boton.className = "opcion";
-            boton.textContent = opcion.texto;
-            boton.type = "button";
+        if (tiempoEspera > 0) {
 
-            boton.addEventListener("click", () => {
+            await esperar(tiempoEspera);
 
-                if (finalizado) return;
+        }
 
-                agregarMensaje(opcion.texto, "usuario");
+        // Registrar momento del envío
 
-                // Controlar el ingreso del nombre
-                if (nodo.campo === "nombre") {
+        ultimoEnvio = Date.now();
 
-                    const campo = document.getElementById("campo-nombre");
+        // Crear controlador de cancelación
 
-                    if (!campo) return;
+        controller = new AbortController();
 
-                    const nombre = campo.value.trim();
+        // Límite máximo de 30 segundos
 
-                    // Validación del formato del nombre
-                    const formatoValido =
-                        /^[\p{L}][\p{L}\s'-]{0,39}$/u;
+        temporizador = setTimeout(() => {
 
-                    if (!formatoValido.test(nombre)) {
-                        mostrarError();
-                        return;
-                    }
+            controller.abort();
 
-                    nombreUsuario = nombre;
-                }
+        }, 30000);
 
-                // Control de finalización
-                if (nodoActual.id === "finalizar") {
-                    finalizado = true;
-                }
+        // Preparar los tres datos obligatorios
 
-                if (opcion.siguiente === "inicio") {
-                    reiniciarConversacion();
-                } else {
-                    mostrarNodo(opcion.siguiente);
-                }
-            });
+        const datos = {
+            sessionId: sessionId,
+            mensaje: mensaje,
+            fecha: new Date().toISOString()
+        };
 
-            contenedorOpciones.appendChild(boton);
+        // Enviar solicitud a Make
+
+        const respuesta = await fetch(WEBHOOK_URL, {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(datos),
+
+            signal: controller.signal
+
         });
 
-        mensajes.appendChild(contenedorOpciones);
-    }
+        // Leer respuesta del servidor
 
-    // Mostrar el campo de ingreso únicamente cuando se solicita un dato
-    if (nodo.campo === "nombre") {
-        mostrarCampoNombre(nodo);
-    }
+        const textoRecibido = await respuesta.text();
 
-    // Mantener visible la zona inferior del chat
-    zonaChat.scrollTop = zonaChat.scrollHeight;
-}
+        // Comprobar errores HTTP
 
-// Mostrar el campo de ingreso de nombre
+        if (!respuesta.ok) {
 
-function mostrarCampoNombre(nodo) {
+            throw new Error(`HTTP_${respuesta.status}`);
 
-    const campo = document.createElement("input");
-
-    campo.type = "text";
-    campo.id = "campo-nombre";
-    campo.className = "campo-nombre";
-    campo.placeholder = nodo.placeholder;
-    campo.maxLength = 40;
-    campo.autocomplete = "given-name";
-    campo.setAttribute("aria-label", nodo.placeholder);
-
-    campo.addEventListener("keydown", (evento) => {
-        if (evento.key === "Enter") {
-            const boton = mensajes.querySelector(".opciones button");
-            if (boton) boton.click();
         }
-    });
 
-    entrada.appendChild(campo);
+        // Interpretar respuesta
 
-    campo.focus();
+        const respuestaFinal = obtenerRespuesta(textoRecibido);
+
+        // Quitar indicador de carga
+
+        indicador.remove();
+
+        // Mostrar respuesta del agente
+
+        agregarMensaje(respuestaFinal, "agente");
+
+    } catch (error) {
+
+        // Quitar indicador de carga
+
+        indicador.remove();
+
+        // Diferenciar los tipos de errores
+
+        if (
+            error.name === "AbortError" ||
+            (controller && controller.signal.aborted)
+        ) {
+
+            agregarMensaje(
+                "La solicitud tardó demasiado. Se agotó el tiempo de espera de 30 segundos. Intentá nuevamente.",
+                "agente"
+            );
+
+        } else if (
+            error.message.startsWith("HTTP_")
+        ) {
+
+            const codigo = error.message.replace("HTTP_", "");
+
+            agregarMensaje(
+                `Make respondió con error (código ${codigo}). Revisá que tu escenario esté en Active o que hayas apretado Run once.`,
+                "agente"
+            );
+
+        } else {
+
+            agregarMensaje(
+                "No pude conectarme con el servidor. Revisá tu conexión a Internet y que la URL del webhook sea correcta.",
+                "agente"
+            );
+
+        }
+
+    } finally {
+
+        // Limpiar temporizador
+
+        if (temporizador) {
+
+            clearTimeout(temporizador);
+
+        }
+
+        // Restaurar controles siempre
+
+        cargando = false;
+
+        cambiarEstado("listo");
+
+        campoMensaje.focus();
+
+    }
+
 }
 
-// Mostrar error de validación
+// ======================================
+// EVENTOS
+// ======================================
 
-function mostrarError() {
+// Enviar mediante el botón
 
-    const anterior = entrada.querySelector(".error");
+formulario.addEventListener("submit", enviarMensaje);
 
-    if (anterior) anterior.remove();
-
-    const error = document.createElement("p");
-    error.className = "error";
-    error.textContent = buscarNodo("inicio").error;
-
-    entrada.appendChild(error);
-}
-
-// Reiniciar la conversación por decisión del usuario
-
-function reiniciarConversacion() {
-
-    nombreUsuario = "";
-    nodoActual = null;
-    finalizado = false;
-
-    mensajes.innerHTML = "";
-    entrada.innerHTML = "";
-
-    mostrarNodo("inicio");
-}
-
-// Iniciar el chatbot
-
-cargarArbol();
+// ======================================
+// FIN DEL MOTOR DEL AGENTE
+// ======================================
